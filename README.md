@@ -6,18 +6,31 @@ This repo is NOT intended to replace existing league tools for working with game
 
 ## Tools
 
-- [log_info](src/bin/log_info/README.md)
-- [video_overlay_gen](src/bin/video_overlay_gen/README.md)
+The following tools are provided in the sll-logtools crate in this workspace.
 
-## Library Features
+- [log_info](ssl-logtools/src/bin/log_info/README.md)
+- [video_overlay_gen](ssl-logtools/src/bin/video_overlay_gen/README.md)
+
+## Using the Library
+
+The library is available in the ssl-loglib crate in this workspace.
+
+### Adding Dependency
+
+The easiest way to use this library in your rust project is by specifying a git dependency.
+
+```toml
+[dependencies]
+ssl-loglib = { git = "https://github.com/SSL-A-Team/ssl-logtools-rs.git" }
+```
 
 ### Reading log files
 
 The primary mechanism for reading log files with this library is the `LogFileReader` struct. For convenience, this struct implements the `Iterator` trait so you can directly loop over messages from your log file.
 
 ```rust
-use ssl_logtools_rs::MessageBody;
-use ssl_logtools_rs::log_file_reader::LogFileReader;
+use ssl_loglib::MessageBody;
+use ssl_loglib::log_file_reader::LogFileReader;
 
 let reader = LogFileReader::new("path/to/log/file.log")?;
 for message in reader {
@@ -33,7 +46,7 @@ If you are loading log data from another data source (not a file on disk), you c
 There is also a convenienve function for pulling all referee messages out of a log file.
 
 ```rust
-use ssl_logtools_rs::get_all_referee_messages;
+use ssl_loglib::get_all_referee_messages;
 
 let ref_messages = get_all_referee_messages("path/to/log/file.log")?;
 // ref_messages is a Vec<LogMessage>
