@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="300"
+   viewBox="0 0 508 79.374998"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="test.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.5046682"
+     inkscape:cx="736.12722"
+     inkscape:cy="107.99175"
+     inkscape:window-width="2560"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3" />
+  <defs
+     id="defs1"/>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Background">
+    <rect
+       style="fill:#646464;stroke-width:0.254001;fill-opacity:1"
+       id="rect1"
+       width="508"
+       height="79.375"
+       x="0"
+       y="0"
+       ry="10"
+       inkscape:label="Background rect" />
+  </g>
+  <g
+     inkscape:label="Game Info"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:16.9333px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#f9f9f9;stroke-width:0.254"
+       x="254.00827"
+       y="18.975561"
+       id="text3"
+       inkscape:label="Stage"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="font-size:16.9333px;fill:#f9f9f9;stroke-width:0.254"
+         x="254.00827"
+         y="18.975561">{{ stage }}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16.9333px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#f9f9f9;stroke-width:0.254"
+       x="254.00827"
+       y="69.014885"
+       id="text3-6"
+       inkscape:label="Command"><tspan
+         sodipodi:role="line"
+         id="tspan3-1"
+         style="font-size:16.9333px;stroke-width:0.254;fill:{{command_color}}"
+         x="254.00827"
+         y="69.014885">{{ command }}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:25.4px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#f9f9f9;stroke-width:0.254"
+       x="254.01241"
+       y="46.366161"
+       id="text4"
+       inkscape:label="Time"><tspan
+         sodipodi:role="line"
+         id="tspan4"
+         style="font-size:25.4px;stroke-width:0.254;fill:{{clock_color}}"
+         x="254.01242"
+         y="46.366161">{{ stage_time_negative }}{{ stage_time_minutes }}:{{ stage_time_seconds }}</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Yellow team info"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:50.8px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffffa8;stroke-width:0.254;fill-opacity:1"
+       x="79.375"
+       y="67.270309"
+       id="text2"
+       inkscape:label="Yellow score"><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         style="font-size:50.8px;fill:#ffffa8;stroke-width:0.254;fill-opacity:1"
+         x="79.375"
+         y="67.270309">{{ yellow.score }}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16.9333px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffffa8;stroke-width:0.254;fill-opacity:1"
+       x="79.375"
+       y="18.975561"
+       id="text1"
+       inkscape:label="Yellow name"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="font-size:16.9333px;text-align:center;text-anchor:middle;fill:#ffffa8;stroke-width:0.254;fill-opacity:1"
+         x="79.375"
+         y="18.975561">{{ yellow.name }}</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Blue team info"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:50.8px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#a8a8ff;stroke-width:0.254;fill-opacity:1"
+       x="428.625"
+       y="67.270309"
+       id="text2-7"
+       inkscape:label="Blue score"><tspan
+         sodipodi:role="line"
+         id="tspan2-1"
+         style="font-size:50.8px;fill:#a8a8ff;stroke-width:0.254;fill-opacity:1"
+         x="428.625"
+         y="67.270309">{{ blue.score }}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16.9333px;line-height:1.2;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#a8a8ff;stroke-width:0.254;fill-opacity:1"
+       x="428.625"
+       y="18.975561"
+       id="text1-8"
+       inkscape:label="Blue name"><tspan
+         sodipodi:role="line"
+         id="tspan1-2"
+         style="font-size:16.9333px;text-align:center;text-anchor:middle;fill:#a8a8ff;stroke-width:0.254;fill-opacity:1"
+         x="428.625"
+         y="18.975561">{{ blue.name }}</tspan></text>
+  </g>
+</svg>

@@ -1,3 +1,4 @@
+use anyhow;
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use indicatif::ProgressBar;
@@ -5,10 +6,12 @@ use skia_safe::EncodedImageFormat;
 use ssl_logtools_rs::{LogMessage, MessageBody, get_all_referee_messages};
 use std::time::Duration;
 use std::{io, process::Command};
+use std::fs::File;
+use std::io::BufReader;
 use which::which;
 
-mod overlay;
-mod text_helpers;
+mod colors;
+mod templates;
 
 #[derive(Parser)]
 #[command(version)]
@@ -19,13 +22,13 @@ struct Args {
     output_path: String,
     #[arg(short = 'f', long, default_value_t = 23.98)]
     frame_rate: f64,
-    #[arg(short, long)]
+    #[arg(short = 'k', long)]
     /// Skip running ffmpeg to combine frames into a video file
     skip_ffmpeg: bool,
     #[arg(short = 'o', long)]
     /// Directory to output frames to. If not set, frames will be written to a temporary directory.
     frame_output_dir: Option<String>,
-    #[arg(short = 't', long)]
+    #[arg(short, long)]
     /// Start time in seconds from the beginning of the log
     start_time: Option<f64>,
     #[arg(short, long)]
@@ -34,6 +37,12 @@ struct Args {
     #[arg(short, long)]
     /// Show full ffmpeg output
     verbose_ffmpeg_output: bool,
+    #[arg(short, long, default_value_t = ("default").to_string())]
+    /// Name of builtin template or path to template file
+    template: String,
+    #[arg(short, long)]
+    /// Path to colors definition JSON file
+    colors: Option<String>,
 }
 
 fn find_ref_msg_by_time(
@@ -56,7 +65,7 @@ fn add_seconds(timestamp: DateTime<Utc>, seconds: f64) -> DateTime<Utc> {
     timestamp + Duration::new(secs, nanos)
 }
 
-fn main() -> std::io::Result<()> {
+fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     if which("ffmpeg").is_err() && !args.skip_ffmpeg {
@@ -64,17 +73,24 @@ fn main() -> std::io::Result<()> {
         return Ok(());
     }
 
+    let colors = match args.colors {
+        Some(path) => {
+            let file = File::open(path)?;
+            let reader = BufReader::new(file);
+            let colors: colors::Colors = serde_json::from_reader(reader)?;
+            colors
+        },
+        None => colors::Colors::default()
+    };
+
+    let template = templates::get_template(&args.template)?;
+
     eprintln!("Loading referee messages from log...");
     let ref_messages = get_all_referee_messages(args.log_path)?;
 
-    let mut surface = overlay::create_surface().unwrap();
+    let font_mgr = skia_safe::FontMgr::default();
 
-    let font_mgr = skia_safe::FontMgr::new();
-    let family_name = "Arial";
-    let font_style = skia_safe::FontStyle::normal();
-    let typeface = font_mgr
-        .match_family_style(family_name, font_style)
-        .expect("Failed to find the font family");
+    let mut surface = templates::initialize_surface(&template, &font_mgr)?;
 
     let temp_dir = tempfile::Builder::new()
         .prefix("ssl_log_overlay_")
@@ -142,7 +158,8 @@ fn main() -> std::io::Result<()> {
             break;
         }
 
-        overlay::draw_overlay(&mut surface, &ref_message, &typeface);
+        templates::render_template_to_surface(&template, ref_message, &colors, &mut surface, &font_mgr)?;
+
         let frame_path = format!("{}/frame_{}.png", frame_dir, frame_number);
         let image = surface.image_snapshot();
         match image.encode(None, EncodedImageFormat::PNG, 100) {
@@ -150,10 +167,7 @@ fn main() -> std::io::Result<()> {
                 std::fs::write(&frame_path, data.as_bytes())?;
             }
             None => {
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    "Failed to encode image as PNG",
-                ));
+                return Err(anyhow::Error::msg("Failed to encode image as PNG"));
             }
         }
         frame_timestamp = add_seconds(frame_timestamp, frame_duration);
