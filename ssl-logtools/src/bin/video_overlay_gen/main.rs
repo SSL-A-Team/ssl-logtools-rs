@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use clap::Parser;
 use indicatif::ProgressBar;
 use skia_safe::EncodedImageFormat;
-use ssl_logtools_rs::{LogMessage, MessageBody, get_all_referee_messages};
+use ssl_loglib::{LogMessage, MessageBody, get_all_referee_messages};
 use std::time::Duration;
 use std::{io, process::Command};
 use std::fs::File;

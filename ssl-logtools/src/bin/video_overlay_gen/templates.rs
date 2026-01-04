@@ -2,13 +2,13 @@ use anyhow;
 use include_dir::{Dir, DirEntry, include_dir};
 use skia_safe::resources::NativeResourceProvider;
 use skia_safe::{Color, FontMgr, Surface, surfaces, svg};
-use ssl_logtools_rs::protos::refbox::ssl_gc_referee_message::Referee;
-use ssl_logtools_rs::protos::refbox::ssl_gc_referee_message::referee::{Command, Stage};
+use ssl_loglib::protos::refbox::ssl_gc_referee_message::Referee;
+use ssl_loglib::protos::refbox::ssl_gc_referee_message::referee::{Command, Stage};
 use std::io;
 use tera::Tera;
 use crate::colors::Colors;
 
-const BUILTIN_TEMPLATES: Dir = include_dir!("./src/bin/video_overlay_gen/templates");
+const BUILTIN_TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/bin/video_overlay_gen/templates");
 
 pub fn get_template(template_name: &str) -> anyhow::Result<Tera> {
     match BUILTIN_TEMPLATES.get_entry(template_name.to_string() + ".svg") {

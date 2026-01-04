@@ -1,0 +1,22 @@
+[package]
+name = "ssl-logtools"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ssl-loglib = { path = "../ssl-loglib" }
+anyhow = "1.0.100"
+clap = { version = "4.5.53", features = ["derive"] }
+include_dir = "0.7.4"
+indicatif = "0.18.3"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.148"
+skia-safe = { version = "0.91.1", features = ["svg"] }
+tempfile = "3.23.0"
+tera = "1.20.1"
+which = "8.0.0"
+chrono = "0.4.42"
+
+[target.'cfg(target_os = "windows")'.dependencies.skia-safe]
+version = "0.91.1"
+features = ["svg", "d3d", "gl", "vulkan"]

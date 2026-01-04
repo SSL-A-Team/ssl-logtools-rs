@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use clap::Parser;
-use ssl_logtools_rs::MessageBody;
-use ssl_logtools_rs::log_file_reader::LogFileReader;
-use ssl_logtools_rs::raw::MessageType;
+use ssl_loglib::MessageBody;
+use ssl_loglib::log_file_reader::LogFileReader;
+use ssl_loglib::raw::MessageType;
 use std::collections::HashMap;
 use std::io;
 
