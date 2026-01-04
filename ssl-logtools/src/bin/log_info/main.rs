@@ -15,7 +15,11 @@ struct Args {
 fn main() -> io::Result<()> {
     let args = Args::parse();
 
-    let reader = LogFileReader::new(args.log_path)?;
+    let mut reader = LogFileReader::new(args.log_path)?;
+
+    if reader.is_indexed()? {
+        println!("Log file is indexed.");
+    }
 
     let mut counts: HashMap<MessageType, u32> = HashMap::new();
 
