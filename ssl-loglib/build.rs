@@ -5,7 +5,10 @@ use protobuf_codegen::Codegen;
 
 fn build_protos_in_dir(dir: &str, namespace: &str) {
     let proto_sources: Vec<PathBuf> = glob(&format!("{}/*.proto", dir))
-        .expect(&format!("Failed to glob protobuf source files in {}", dir))
+        .unwrap_or_else(|_| {
+            eprintln!("Failed to glob protobuf source files in {}", dir);
+            std::process::exit(1);
+        })
         .filter_map(|e| e.ok())
         .collect();
 

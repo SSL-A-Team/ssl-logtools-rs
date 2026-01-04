@@ -1,13 +1,12 @@
-use anyhow;
 use chrono::{DateTime, Utc};
 use clap::Parser;
 use indicatif::ProgressBar;
 use skia_safe::EncodedImageFormat;
 use ssl_loglib::{LogMessage, MessageBody, get_all_referee_messages};
-use std::time::Duration;
-use std::{io, process::Command};
 use std::fs::File;
 use std::io::BufReader;
+use std::time::Duration;
+use std::process::Command;
 use which::which;
 
 mod colors;
@@ -46,7 +45,7 @@ struct Args {
 }
 
 fn find_ref_msg_by_time(
-    ref_msgs: &Vec<LogMessage>,
+    ref_msgs: &[LogMessage],
     timestamp: DateTime<Utc>,
     start_index: usize,
 ) -> usize {
@@ -69,7 +68,7 @@ fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     if which("ffmpeg").is_err() && !args.skip_ffmpeg {
-        println!("Could not find ffmpeg. Please install it or use the --skip-ffmpeg flag.");
+        eprintln!("Could not find ffmpeg. Please install it or use the --skip-ffmpeg flag.");
         return Ok(());
     }
 
@@ -79,8 +78,8 @@ fn main() -> anyhow::Result<()> {
             let reader = BufReader::new(file);
             let colors: colors::Colors = serde_json::from_reader(reader)?;
             colors
-        },
-        None => colors::Colors::default()
+        }
+        None => colors::Colors::default(),
     };
 
     let template = templates::get_template(&args.template)?;
@@ -129,7 +128,10 @@ fn main() -> anyhow::Result<()> {
     };
     let mut current_message_index = first_message_index;
 
-    let total_frame_count = ((ref_messages[last_message_index].timestamp - ref_messages[first_message_index].timestamp).as_seconds_f64() / frame_duration) as u64;
+    let total_frame_count = ((ref_messages[last_message_index].timestamp
+        - ref_messages[first_message_index].timestamp)
+        .as_seconds_f64()
+        / frame_duration) as u64;
 
     eprintln!("Rendering frames...");
     let progress_bar = ProgressBar::new(total_frame_count);
@@ -144,21 +146,27 @@ fn main() -> anyhow::Result<()> {
         let message = &ref_messages[current_message_index];
         let ref_message = match &message.body {
             MessageBody::Refbox2013(msg) => Ok(msg),
-            _ => Err(io::Error::new(
-                io::ErrorKind::Other,
+            _ => Err(anyhow::Error::msg(
                 "Unexpected message type in referee message array",
             )),
         }?;
 
         if current_message_index > last_message_index {
             break;
-        } else if current_message_index == last_message_index
+        }
+        if current_message_index == last_message_index
             && (frame_timestamp - message.timestamp).as_seconds_f64() > frame_duration
         {
             break;
         }
 
-        templates::render_template_to_surface(&template, ref_message, &colors, &mut surface, &font_mgr)?;
+        templates::render_template_to_surface(
+            &template,
+            ref_message,
+            &colors,
+            &mut surface,
+            &font_mgr,
+        )?;
 
         let frame_path = format!("{}/frame_{}.png", frame_dir, frame_number);
         let image = surface.image_snapshot();

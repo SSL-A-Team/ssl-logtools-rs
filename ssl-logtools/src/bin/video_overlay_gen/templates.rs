@@ -1,22 +1,20 @@
-use anyhow;
+use crate::colors::Colors;
 use include_dir::{Dir, DirEntry, include_dir};
 use skia_safe::resources::NativeResourceProvider;
 use skia_safe::{Color, FontMgr, Surface, surfaces, svg};
 use ssl_loglib::protos::refbox::ssl_gc_referee_message::Referee;
 use ssl_loglib::protos::refbox::ssl_gc_referee_message::referee::{Command, Stage};
-use std::io;
 use tera::Tera;
-use crate::colors::Colors;
 
-const BUILTIN_TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/bin/video_overlay_gen/templates");
+const BUILTIN_TEMPLATES: Dir =
+    include_dir!("$CARGO_MANIFEST_DIR/src/bin/video_overlay_gen/templates");
 
 pub fn get_template(template_name: &str) -> anyhow::Result<Tera> {
     match BUILTIN_TEMPLATES.get_entry(template_name.to_string() + ".svg") {
         Some(DirEntry::File(file)) => {
-            let content = file.contents_utf8().ok_or(io::Error::new(
-                io::ErrorKind::Other,
-                "Failed to read builtin template file",
-            ))?;
+            let content = file
+                .contents_utf8()
+                .ok_or(anyhow::Error::msg("Failed to read builtin template file"))?;
             let mut tera = Tera::default();
             tera.add_raw_template(template_name, content)?;
             Ok(tera)
@@ -30,7 +28,7 @@ pub fn initialize_surface(template: &Tera, font_mgr: &FontMgr) -> anyhow::Result
     let svg_dom = svg::Dom::from_str(svg_content, NativeResourceProvider::from(font_mgr.clone()))?;
     let size = svg_dom.root().intrinsic_size();
     surfaces::raster_n32_premul((size.width as i32, size.height as i32))
-        .ok_or(io::Error::new(io::ErrorKind::Other, "Failed to create surface").into())
+        .ok_or(anyhow::Error::msg("Failed to create surface"))
 }
 
 pub fn render_template_to_surface(
@@ -50,7 +48,11 @@ pub fn render_template_to_surface(
     Ok(())
 }
 
-fn render_template(template: &Tera, ref_message: &Referee, colors: &Colors) -> anyhow::Result<String> {
+fn render_template(
+    template: &Tera,
+    ref_message: &Referee,
+    colors: &Colors,
+) -> anyhow::Result<String> {
     let mut context = tera::Context::new();
 
     let mut yellow_map = tera::Map::new();
@@ -77,7 +79,10 @@ fn render_template(template: &Tera, ref_message: &Referee, colors: &Colors) -> a
 
     context.insert("stage", stage_to_string(&ref_message.stage()));
     context.insert("command", command_to_string(&ref_message.command()));
-    context.insert("command_color", command_color(&ref_message.command(), colors));
+    context.insert(
+        "command_color",
+        command_color(&ref_message.command(), colors),
+    );
     context.insert("clock_color", clock_color(&ref_message.command(), colors));
 
     let stage_time_minutes = match ref_message.stage_time_left {

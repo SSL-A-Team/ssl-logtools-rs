@@ -53,7 +53,7 @@ impl LogFileReader {
                 format!("Unsupported log format version: {}", version),
             ));
         }
-        return Ok(());
+        Ok(())
     }
 }
 
@@ -63,12 +63,12 @@ impl Iterator for LogFileReader {
     fn next(&mut self) -> Option<Self::Item> {
         let res = self.get_next_message();
         match res {
-            Ok(m) => return Some(m),
+            Ok(m) => Some(m),
             Err(e) => {
                 if e.kind() != io::ErrorKind::UnexpectedEof {
                     eprintln!("{}", e);
                 }
-                return None;
+                None
             }
         }
     }

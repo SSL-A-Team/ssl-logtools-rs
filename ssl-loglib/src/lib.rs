@@ -46,7 +46,7 @@ pub fn extract_next_message<R: Read>(reader: &mut R) -> io::Result<LogMessage> {
         MessageType::VisionTracker2020 => MessageBody::VisionTracker2020(TrackerWrapperPacket::parse_from_bytes(&raw_message.data)?),
         MessageType::Index2021 => MessageBody::Index2021(IndexMessage::from_bytes(&raw_message.data)?),
     };
-    Ok(LogMessage { timestamp: timestamp, body: body })
+    Ok(LogMessage { timestamp, body })
 }
 
 pub fn get_all_referee_messages(path: impl AsRef<Path>) -> io::Result<Vec<LogMessage>> {
