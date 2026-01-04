@@ -1,4 +1,5 @@
 pub mod protos;
+pub mod index;
 pub mod log_file_reader;
 pub mod raw;
 
@@ -10,17 +11,21 @@ use chrono::{TimeZone, Utc, DateTime};
 
 use crate::log_file_reader::LogFileReader;
 use crate::protos::refbox::ssl_gc_referee_message::Referee;
+use crate::protos::vision::messages_robocup_ssl_wrapper_legacy::SSL_WrapperPacket as SSL_WrapperPacket_Legacy;
+use crate::protos::vision::messages_robocup_ssl_wrapper::SSL_WrapperPacket;
+use crate::protos::vision::messages_robocup_ssl_wrapper_tracked::TrackerWrapperPacket;
 use crate::raw::{MessageType, extract_next_raw_message};
+use crate::index::IndexMessage;
 
 #[derive(Clone)]
 pub enum MessageBody {
     Blank(()),
     Unkown(()),
-    Vision2010(()),  // TODO
+    Vision2010(SSL_WrapperPacket_Legacy),
     Refbox2013(Referee),
-    Vision2014(()),  // TODO
-    VisionTracker2020(()),  // TODO
-    Index2021(()),  // TODO
+    Vision2014(SSL_WrapperPacket),
+    VisionTracker2020(TrackerWrapperPacket),
+    Index2021(IndexMessage),
 }
 
 #[derive(Clone)]
@@ -35,11 +40,11 @@ pub fn extract_next_message<R: Read>(reader: &mut R) -> io::Result<LogMessage> {
     let body = match raw_message.message_type {
         MessageType::Blank => MessageBody::Blank(()),
         MessageType::Unkown => MessageBody::Unkown(()),
-        MessageType::Vision2010 => MessageBody::Vision2010(()),
+        MessageType::Vision2010 => MessageBody::Vision2010(SSL_WrapperPacket_Legacy::parse_from_bytes(&raw_message.data)?),
         MessageType::Refbox2013 => MessageBody::Refbox2013(Referee::parse_from_bytes(&raw_message.data)?),
-        MessageType::Vision2014 => MessageBody::Vision2014(()),
-        MessageType::VisionTracker2020 => MessageBody::VisionTracker2020(()),
-        MessageType::Index2021 => MessageBody::Index2021(()),
+        MessageType::Vision2014 => MessageBody::Vision2014(SSL_WrapperPacket::parse_from_bytes(&raw_message.data)?),
+        MessageType::VisionTracker2020 => MessageBody::VisionTracker2020(TrackerWrapperPacket::parse_from_bytes(&raw_message.data)?),
+        MessageType::Index2021 => MessageBody::Index2021(IndexMessage::from_bytes(&raw_message.data)?),
     };
     Ok(LogMessage { timestamp: timestamp, body: body })
 }

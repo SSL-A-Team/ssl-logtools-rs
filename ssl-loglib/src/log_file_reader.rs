@@ -1,6 +1,7 @@
 use crate::{LogMessage, extract_next_message};
 use std::fs::File;
 use std::io::Read;
+use std::io::Seek;
 use std::io;
 use std::path::Path;
 
@@ -20,6 +21,16 @@ impl LogFileReader {
 
     pub fn get_next_message(&mut self) -> io::Result<LogMessage> {
         extract_next_message(&mut self.file)
+    }
+
+    pub fn is_indexed(&mut self) -> io::Result<bool> {
+        const EXPECTED_MARKER: &[u8] = b"INDEXED";
+        let position_cache = self.file.stream_position()?;
+        self.file.seek(io::SeekFrom::End(-(EXPECTED_MARKER.len() as i64)))?;
+        let mut marker_buffer = [0; EXPECTED_MARKER.len()];
+        self.file.read_exact(&mut marker_buffer)?;
+        self.file.seek(io::SeekFrom::Start(position_cache))?;
+        Ok(marker_buffer == EXPECTED_MARKER)
     }
 
     fn verify_log_preamble(&mut self) -> io::Result<()> {
